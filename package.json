@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/check-install.js",
+    "prebuild": "node scripts/check-install.js",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start"
