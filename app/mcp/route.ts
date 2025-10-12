@@ -2,6 +2,10 @@ import { baseURL } from "@/baseUrl";
 import sampleDataset from "@/data/mcp-sample-data.json";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
+import {
+  CallToolResultSchema,
+  type CallToolResult,
+} from "@modelcontextprotocol/sdk/types";
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
   const result = await fetch(`${baseUrl}${path}`);
@@ -109,15 +113,25 @@ const handler = createMcpHandler(async (server) => {
         content: [
           {
             type: "text",
-            text: name,
+            text: `Here is the homepage for ${normalizedName}.`,
+          },
+          {
+            type: "resource",
+            resource: {
+              uri: contentWidget.templateUri,
+              text: contentWidget.title,
+              mimeType: "text/html+skybridge",
+            },
           },
         ],
         structuredContent: {
-          name: name,
+          name: normalizedName,
           timestamp: new Date().toISOString(),
         },
         _meta: widgetMeta(contentWidget),
       };
+
+      return fallbackResponse;
     }
   );
 });
