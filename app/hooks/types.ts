@@ -79,11 +79,14 @@ export type CallTool = (
 
 /** Extra events */
 export const SET_GLOBALS_EVENT_TYPE = "openai:set_globals";
-export class SetGlobalsEvent extends CustomEvent<{
+
+type SetGlobalsEventDetail = {
   globals: Partial<OpenAIGlobals>;
-}> {
-  readonly type = SET_GLOBALS_EVENT_TYPE;
-}
+};
+
+export type SetGlobalsEvent = CustomEvent<SetGlobalsEventDetail> & {
+  readonly type: typeof SET_GLOBALS_EVENT_TYPE;
+};
 
 /**
  * Global oai object injected by the web sandbox for communicating with chatgpt host page.
