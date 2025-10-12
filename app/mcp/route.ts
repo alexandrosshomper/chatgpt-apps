@@ -122,4 +122,5 @@ const ensureStreamableAcceptHeader = (request: Request) => {
 
 export const GET = ensureStreamableAcceptHeader;
 export const POST = ensureStreamableAcceptHeader;
+export const HEAD = ensureStreamableAcceptHeader;
 export const OPTIONS = ensureStreamableAcceptHeader;
