@@ -95,5 +95,31 @@ const handler = createMcpHandler(async (server) => {
   );
 });
 
-export const GET = handler;
-export const POST = handler;
+const ensureStreamableAcceptHeader = (request: Request) => {
+  const acceptHeader = request.headers.get("accept") || "";
+
+  if (acceptHeader.includes("text/event-stream")) {
+    return handler(request);
+  }
+
+  const values = new Set(
+    acceptHeader
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean)
+  );
+
+  values.add("application/json");
+  values.add("text/event-stream");
+
+  const newHeaders = new Headers(request.headers);
+  newHeaders.set("accept", Array.from(values).join(", "));
+
+  const updatedRequest = new Request(request, { headers: newHeaders });
+
+  return handler(updatedRequest);
+};
+
+export const GET = ensureStreamableAcceptHeader;
+export const POST = ensureStreamableAcceptHeader;
+export const OPTIONS = ensureStreamableAcceptHeader;
