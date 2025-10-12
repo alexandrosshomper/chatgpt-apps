@@ -2,10 +2,6 @@ import { baseURL } from "@/baseUrl";
 import sampleDataset from "@/data/mcp-sample-data.json";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
-import {
-  CallToolResultSchema,
-  type CallToolResult,
-} from "@modelcontextprotocol/sdk/types";
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
   const result = await fetch(`${baseUrl}${path}`);
@@ -41,6 +37,7 @@ const cloneResponse = <T>(value: T): T => {
 };
 
 type SampleDataset = typeof sampleDataset;
+type ToolResponse = SampleDataset["examples"][number]["response"];
 
 const sampleResponseMap = new Map<
   string,
@@ -86,6 +83,51 @@ const handler = createMcpHandler(async (server) => {
     })
   );
 
+  const toolHandler = (async (
+    { name }: { name: string },
+    _extra: Parameters<typeof server.registerTool>[2] extends (
+      ...args: infer P
+    ) => any
+      ? P[1]
+      : never
+  ) => {
+    const normalizedName = name.trim() || "Guest";
+    const sample = sampleResponseMap.get(normalizedName.toLowerCase());
+
+    if (sample) {
+      const clonedSample = cloneResponse(sample);
+
+      return {
+        ...clonedSample,
+        _meta: widgetMeta(contentWidget),
+      } satisfies ToolResponse;
+    }
+
+    const fallbackResponse: ToolResponse = {
+      content: [
+        {
+          type: "text",
+          text: `Here is the homepage for ${normalizedName}.`,
+        } as unknown as ToolResponse["content"][number],
+        {
+          type: "resource",
+          resource: {
+            uri: contentWidget.templateUri,
+            text: contentWidget.title,
+            mimeType: "text/html+skybridge",
+          },
+        } as unknown as ToolResponse["content"][number],
+      ],
+      structuredContent: {
+        name: normalizedName,
+        timestamp: new Date().toISOString(),
+      },
+      _meta: widgetMeta(contentWidget),
+    };
+
+    return fallbackResponse;
+  }) as unknown as Parameters<typeof server.registerTool>[2];
+
   server.registerTool(
     contentWidget.id,
     {
@@ -93,46 +135,13 @@ const handler = createMcpHandler(async (server) => {
       description:
         "Fetch and display the homepage content with the name of the user",
       inputSchema: {
-        name: z.string().describe("The name of the user to display on the homepage"),
+        name: z
+          .string()
+          .describe("The name of the user to display on the homepage"),
       },
       _meta: widgetMeta(contentWidget),
     },
-    async ({ name }) => {
-      const sample = sampleResponseMap.get(name.trim().toLowerCase());
-
-      if (sample) {
-        const clonedSample = cloneResponse(sample);
-
-        return {
-          ...clonedSample,
-          _meta: widgetMeta(contentWidget),
-        };
-      }
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Here is the homepage for ${normalizedName}.`,
-          },
-          {
-            type: "resource",
-            resource: {
-              uri: contentWidget.templateUri,
-              text: contentWidget.title,
-              mimeType: "text/html+skybridge",
-            },
-          },
-        ],
-        structuredContent: {
-          name: normalizedName,
-          timestamp: new Date().toISOString(),
-        },
-        _meta: widgetMeta(contentWidget),
-      };
-
-      return fallbackResponse;
-    }
+    toolHandler
   );
 });
 
