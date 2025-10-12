@@ -103,6 +103,16 @@ The MCP server is available at:
 http://localhost:3000/mcp
 ```
 
+### MCP Test Data
+
+Deterministic sample responses for the `show_content` tool are available in `data/mcp-sample-data.json`. Regenerate them at any time with:
+
+```
+node scripts/generate-mcp-test-data.js
+```
+
+The script produces five example payloads that mirror the structure returned by the MCP endpoint, making it easy to write automated tests or quickly inspect the expected metadata. Invoking the MCP tool with one of the sample names will replay the matching fixture so you can verify end-to-end transport of the widget metadata and structured content. Other inputs fall back to live data with fresh timestamps.
+
 ### Connecting from ChatGPT
 
 1. [Deploy your app to Vercel](https://vercel.com/new/clone?demo-description=Ship%20an%20ChatGPT%20app%20on%20Vercel%20with%20Next.js%20and%20Model%20Context%20Protocol%20%28MCP%29.%0A&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F5TdbPy0tev8hh3rTOsdfMm%2F155b970ca5e75adb74206db26493efc7%2Fimage.png&demo-title=ChatGPT%20app%20with%20Next.js&demo-url=https%3A%2F%2Fchatgpt-apps-sdk-nextjs-starter.labs.vercel.dev%2F&from=templates&project-name=ChatGPT%20app%20with%20Next.js&project-names=Comma%20separated%20list%20of%20project%20names%2Cto%20match%20the%20root-directories&repository-name=chatgpt-app-with-next-js&repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fchatgpt-apps-sdk-nextjs-starter&root-directories=List%20of%20directory%20paths%20for%20the%20directories%20to%20clone%20into%20projects&skippable-integrations=1&teamSlug=vercel)

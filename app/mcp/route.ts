@@ -1,4 +1,5 @@
 import { baseURL } from "@/baseUrl";
+import sampleDataset from "@/data/mcp-sample-data.json";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
@@ -27,17 +28,32 @@ function widgetMeta(widget: ContentWidget) {
   } as const;
 }
 
+const cloneResponse = <T>(value: T): T => {
+  if (typeof structuredClone === "function") {
+    return structuredClone(value);
+  }
+
+  return JSON.parse(JSON.stringify(value));
+};
+
+type SampleDataset = typeof sampleDataset;
+
+const sampleResponseMap = new Map<
+  string,
+  SampleDataset["examples"][number]["response"]
+>(
+  sampleDataset.examples.map((example) => [
+    example.input.name.trim().toLowerCase(),
+    example.response,
+  ])
+);
+
 const handler = createMcpHandler(async (server) => {
   const html = await getAppsSdkCompatibleHtml(baseURL, "/");
 
   const contentWidget: ContentWidget = {
-    id: "show_content",
-    title: "Show Content",
-    templateUri: "ui://widget/content-template.html",
-    invoking: "Loading content...",
-    invoked: "Content loaded",
-    html: html,
-    description: "Displays the homepage content",
+    ...sampleDataset.tool,
+    html,
   };
   server.registerResource(
     "content-widget",
@@ -78,6 +94,17 @@ const handler = createMcpHandler(async (server) => {
       _meta: widgetMeta(contentWidget),
     },
     async ({ name }) => {
+      const sample = sampleResponseMap.get(name.trim().toLowerCase());
+
+      if (sample) {
+        const clonedSample = cloneResponse(sample);
+
+        return {
+          ...clonedSample,
+          _meta: widgetMeta(contentWidget),
+        };
+      }
+
       return {
         content: [
           {
