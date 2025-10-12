@@ -1,6 +1,11 @@
 import { baseURL } from "@/baseUrl";
+import sampleDataset from "@/data/mcp-sample-data.json";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
+import {
+  CallToolResultSchema,
+  type CallToolResult,
+} from "@modelcontextprotocol/sdk/types";
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
   const result = await fetch(`${baseUrl}${path}`);
@@ -27,17 +32,27 @@ function widgetMeta(widget: ContentWidget) {
   } as const;
 }
 
+const cloneResponse = <T>(value: T): T => {
+  if (typeof structuredClone === "function") {
+    return structuredClone(value);
+  }
+
+  return JSON.parse(JSON.stringify(value));
+};
+
+const sampleResponseMap = new Map<string, CallToolResult>(
+  sampleDataset.examples.map((example) => [
+    example.input.name.trim().toLowerCase(),
+    CallToolResultSchema.parse(example.response),
+  ])
+);
+
 const handler = createMcpHandler(async (server) => {
   const html = await getAppsSdkCompatibleHtml(baseURL, "/");
 
   const contentWidget: ContentWidget = {
-    id: "show_content",
-    title: "Show Content",
-    templateUri: "ui://widget/content-template.html",
-    invoking: "Loading content...",
-    invoked: "Content loaded",
-    html: html,
-    description: "Displays the homepage content",
+    ...sampleDataset.tool,
+    html,
   };
   server.registerResource(
     "content-widget",
@@ -78,19 +93,56 @@ const handler = createMcpHandler(async (server) => {
       _meta: widgetMeta(contentWidget),
     },
     async ({ name }) => {
-      return {
+      const normalizedName = name.trim();
+      const sample = sampleResponseMap.get(normalizedName.toLowerCase());
+
+      if (sample) {
+        const clonedSample = cloneResponse(sample);
+
+        return {
+          ...clonedSample,
+          content: clonedSample.content.map((item) =>
+            item.type === "resource"
+              ? {
+                  ...item,
+                  resource: {
+                    ...item.resource,
+                    uri: contentWidget.templateUri,
+                  },
+                }
+              : item
+          ),
+          structuredContent: {
+            ...clonedSample.structuredContent,
+            name: normalizedName,
+          },
+          _meta: widgetMeta(contentWidget),
+        };
+      }
+
+      const fallbackResponse: CallToolResult = {
         content: [
           {
             type: "text",
-            text: name,
+            text: `Here is the homepage for ${normalizedName}.`,
+          },
+          {
+            type: "resource",
+            resource: {
+              uri: contentWidget.templateUri,
+              text: contentWidget.title,
+              mimeType: "text/html+skybridge",
+            },
           },
         ],
         structuredContent: {
-          name: name,
+          name: normalizedName,
           timestamp: new Date().toISOString(),
         },
         _meta: widgetMeta(contentWidget),
       };
+
+      return fallbackResponse;
     }
   );
 });

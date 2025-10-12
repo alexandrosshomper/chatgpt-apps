@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2024-01-01T12:00:00.000Z",
+  "description": "Sample invocations of the show_content MCP tool. Timestamps are deterministic for repeatable tests.",
+  "tool": {
+    "id": "show_content",
+    "title": "Show Content",
+    "templateUri": "ui://widget/content-template.html",
+    "invoking": "Loading content...",
+    "invoked": "Content loaded",
+    "description": "Displays the homepage content"
+  },
+  "examples": [
+    {
+      "input": {
+        "name": "Avery Johnson"
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is the homepage for Avery Johnson."
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "ui://widget/content-template.html",
+              "text": "Show Content",
+              "mimeType": "text/html+skybridge"
+            }
+          }
+        ],
+        "structuredContent": {
+          "name": "Avery Johnson",
+          "timestamp": "2024-01-01T12:00:00.000Z"
+        },
+        "_meta": {
+          "openai/outputTemplate": "ui://widget/content-template.html",
+          "openai/toolInvocation/invoking": "Loading content...",
+          "openai/toolInvocation/invoked": "Content loaded",
+          "openai/widgetAccessible": false,
+          "openai/resultCanProduceWidget": true
+        }
+      }
+    },
+    {
+      "input": {
+        "name": "Jordan Lee"
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is the homepage for Jordan Lee."
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "ui://widget/content-template.html",
+              "text": "Show Content",
+              "mimeType": "text/html+skybridge"
+            }
+          }
+        ],
+        "structuredContent": {
+          "name": "Jordan Lee",
+          "timestamp": "2024-01-01T12:15:00.000Z"
+        },
+        "_meta": {
+          "openai/outputTemplate": "ui://widget/content-template.html",
+          "openai/toolInvocation/invoking": "Loading content...",
+          "openai/toolInvocation/invoked": "Content loaded",
+          "openai/widgetAccessible": false,
+          "openai/resultCanProduceWidget": true
+        }
+      }
+    },
+    {
+      "input": {
+        "name": "Morgan Patel"
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is the homepage for Morgan Patel."
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "ui://widget/content-template.html",
+              "text": "Show Content",
+              "mimeType": "text/html+skybridge"
+            }
+          }
+        ],
+        "structuredContent": {
+          "name": "Morgan Patel",
+          "timestamp": "2024-01-01T12:30:00.000Z"
+        },
+        "_meta": {
+          "openai/outputTemplate": "ui://widget/content-template.html",
+          "openai/toolInvocation/invoking": "Loading content...",
+          "openai/toolInvocation/invoked": "Content loaded",
+          "openai/widgetAccessible": false,
+          "openai/resultCanProduceWidget": true
+        }
+      }
+    },
+    {
+      "input": {
+        "name": "Quinn Alvarez"
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is the homepage for Quinn Alvarez."
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "ui://widget/content-template.html",
+              "text": "Show Content",
+              "mimeType": "text/html+skybridge"
+            }
+          }
+        ],
+        "structuredContent": {
+          "name": "Quinn Alvarez",
+          "timestamp": "2024-01-01T12:45:00.000Z"
+        },
+        "_meta": {
+          "openai/outputTemplate": "ui://widget/content-template.html",
+          "openai/toolInvocation/invoking": "Loading content...",
+          "openai/toolInvocation/invoked": "Content loaded",
+          "openai/widgetAccessible": false,
+          "openai/resultCanProduceWidget": true
+        }
+      }
+    },
+    {
+      "input": {
+        "name": "Taylor Nakamura"
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is the homepage for Taylor Nakamura."
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "ui://widget/content-template.html",
+              "text": "Show Content",
+              "mimeType": "text/html+skybridge"
+            }
+          }
+        ],
+        "structuredContent": {
+          "name": "Taylor Nakamura",
+          "timestamp": "2024-01-01T13:00:00.000Z"
+        },
+        "_meta": {
+          "openai/outputTemplate": "ui://widget/content-template.html",
+          "openai/toolInvocation/invoking": "Loading content...",
+          "openai/toolInvocation/invoked": "Content loaded",
+          "openai/widgetAccessible": false,
+          "openai/resultCanProduceWidget": true
+        }
+      }
+    }
+  ]
+}
