@@ -50,6 +50,7 @@ const sampleResponseMap = new Map<
 
 const handler = createMcpHandler(async (server) => {
   let cachedContentWidgetHtml: string | undefined;
+  const fallbackContentWidgetHtml = `<!doctype html><html><head><title>Widget unavailable</title></head><body><main><h1>Preview unavailable</h1><p>The widget content could not be loaded. <a href="${baseURL}" target="_blank" rel="noopener noreferrer">Open the app in a new tab</a> instead.</p></main></body></html>`;
 
   const getContentWidgetHtml = async () => {
     if (cachedContentWidgetHtml) {
@@ -60,12 +61,12 @@ const handler = createMcpHandler(async (server) => {
       // Fetch the rendered homepage lazily so that connector handshakes do not block on
       // building the Next.js app. The result is cached for subsequent requests.
       cachedContentWidgetHtml = await getAppsSdkCompatibleHtml(baseURL, "/");
+      return cachedContentWidgetHtml;
     } catch (error) {
       console.error("Failed to fetch content widget HTML", error);
-      cachedContentWidgetHtml = `<!doctype html><html><head><title>Widget unavailable</title></head><body><main><h1>Preview unavailable</h1><p>The widget content could not be loaded. <a href="${baseURL}" target="_blank" rel="noopener noreferrer">Open the app in a new tab</a> instead.</p></main></body></html>`;
+      cachedContentWidgetHtml = undefined;
+      return fallbackContentWidgetHtml;
     }
-
-    return cachedContentWidgetHtml;
   };
 
   const contentWidget: ContentWidget = {
