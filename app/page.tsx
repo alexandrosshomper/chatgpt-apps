@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useWidgetProps } from "./hooks/use-widget-props";
+import { useWidgetProps } from "./hooks";
 
 export default function Home() {
-  const toolOutput = useWidgetProps<{ result?: { structuredContent?: { name?: string } } }>();
+  const toolOutput = useWidgetProps<{ name?: string; result?: { structuredContent?: { name?: string } } }>();
+
+  const name = toolOutput?.result?.structuredContent?.name || toolOutput?.name;
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -23,7 +25,7 @@ export default function Home() {
             Welcome to the ChatGPT Apps SDK Next.js Starter
           </li>
           <li className="mb-2 tracking-[-.01em]">
-            Name returned from tool call: {toolOutput?.result?.structuredContent?.name ?? "..."}
+            Name returned from tool call: {name ?? "..."}
           </li>
           <li className="mb-2 tracking-[-.01em]">
             MCP server path: <Link href="/mcp" className="underline">/mcp</Link>
