@@ -14,7 +14,6 @@ type ContentWidget = {
   templateUri: string;
   invoking: string;
   invoked: string;
-  html: string;
   description: string;
 };
 
@@ -50,11 +49,28 @@ const sampleResponseMap = new Map<
 );
 
 const handler = createMcpHandler(async (server) => {
-  const html = await getAppsSdkCompatibleHtml(baseURL, "/");
+  let cachedContentWidgetHtml: string | undefined;
+  const fallbackContentWidgetHtml = `<!doctype html><html><head><title>Widget unavailable</title></head><body><main><h1>Preview unavailable</h1><p>The widget content could not be loaded. <a href="${baseURL}" target="_blank" rel="noopener noreferrer">Open the app in a new tab</a> instead.</p></main></body></html>`;
+
+  const getContentWidgetHtml = async () => {
+    if (cachedContentWidgetHtml) {
+      return cachedContentWidgetHtml;
+    }
+
+    try {
+      // Fetch the rendered homepage lazily so that connector handshakes do not block on
+      // building the Next.js app. The result is cached for subsequent requests.
+      cachedContentWidgetHtml = await getAppsSdkCompatibleHtml(baseURL, "/");
+      return cachedContentWidgetHtml;
+    } catch (error) {
+      console.error("Failed to fetch content widget HTML", error);
+      cachedContentWidgetHtml = undefined;
+      return fallbackContentWidgetHtml;
+    }
+  };
 
   const contentWidget: ContentWidget = {
     ...sampleDataset.tool,
-    html,
   };
   server.registerResource(
     "content-widget",
@@ -68,19 +84,29 @@ const handler = createMcpHandler(async (server) => {
         "openai/widgetPrefersBorder": true,
       },
     },
-    async (uri) => ({
-      contents: [
-        {
-          uri: uri.href,
-          mimeType: "text/html+skybridge",
-          text: `<html>${contentWidget.html}</html>`,
-          _meta: {
-            "openai/widgetDescription": contentWidget.description,
-            "openai/widgetPrefersBorder": true,
+    async (uri) => {
+      const html = await getContentWidgetHtml();
+
+      const normalizedHtml = html.trim().startsWith("<!doctype")
+        ? html
+        : html.trim().startsWith("<html")
+          ? html
+          : `<html>${html}</html>`;
+
+      return {
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "text/html+skybridge",
+            text: normalizedHtml,
+            _meta: {
+              "openai/widgetDescription": contentWidget.description,
+              "openai/widgetPrefersBorder": true,
+            },
           },
-        },
-      ],
-    })
+        ],
+      };
+    }
   );
 
   const toolHandler = (async (
