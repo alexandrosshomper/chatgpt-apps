@@ -18,15 +18,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Here is the homepage for Avery Johnson."
-          },
-          {
-            "type": "resource",
-            "resource": {
-              "uri": "ui://widget/content-template.html",
-              "text": "Show Content",
-              "mimeType": "text/html+skybridge"
-            }
+            "text": "Avery Johnson"
           }
         ],
         "structuredContent": {
@@ -50,15 +42,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Here is the homepage for Jordan Lee."
-          },
-          {
-            "type": "resource",
-            "resource": {
-              "uri": "ui://widget/content-template.html",
-              "text": "Show Content",
-              "mimeType": "text/html+skybridge"
-            }
+            "text": "Jordan Lee"
           }
         ],
         "structuredContent": {
@@ -82,15 +66,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Here is the homepage for Morgan Patel."
-          },
-          {
-            "type": "resource",
-            "resource": {
-              "uri": "ui://widget/content-template.html",
-              "text": "Show Content",
-              "mimeType": "text/html+skybridge"
-            }
+            "text": "Morgan Patel"
           }
         ],
         "structuredContent": {
@@ -114,15 +90,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Here is the homepage for Quinn Alvarez."
-          },
-          {
-            "type": "resource",
-            "resource": {
-              "uri": "ui://widget/content-template.html",
-              "text": "Show Content",
-              "mimeType": "text/html+skybridge"
-            }
+            "text": "Quinn Alvarez"
           }
         ],
         "structuredContent": {
@@ -146,15 +114,7 @@
         "content": [
           {
             "type": "text",
-            "text": "Here is the homepage for Taylor Nakamura."
-          },
-          {
-            "type": "resource",
-            "resource": {
-              "uri": "ui://widget/content-template.html",
-              "text": "Show Content",
-              "mimeType": "text/html+skybridge"
-            }
+            "text": "Taylor Nakamura"
           }
         ],
         "structuredContent": {

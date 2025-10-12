@@ -40,10 +40,15 @@ const cloneResponse = <T>(value: T): T => {
   return JSON.parse(JSON.stringify(value));
 };
 
-const sampleResponseMap = new Map<string, CallToolResult>(
+type SampleDataset = typeof sampleDataset;
+
+const sampleResponseMap = new Map<
+  string,
+  SampleDataset["examples"][number]["response"]
+>(
   sampleDataset.examples.map((example) => [
     example.input.name.trim().toLowerCase(),
-    CallToolResultSchema.parse(example.response),
+    example.response,
   ])
 );
 
@@ -93,34 +98,18 @@ const handler = createMcpHandler(async (server) => {
       _meta: widgetMeta(contentWidget),
     },
     async ({ name }) => {
-      const normalizedName = name.trim();
-      const sample = sampleResponseMap.get(normalizedName.toLowerCase());
+      const sample = sampleResponseMap.get(name.trim().toLowerCase());
 
       if (sample) {
         const clonedSample = cloneResponse(sample);
 
         return {
           ...clonedSample,
-          content: clonedSample.content.map((item) =>
-            item.type === "resource"
-              ? {
-                  ...item,
-                  resource: {
-                    ...item.resource,
-                    uri: contentWidget.templateUri,
-                  },
-                }
-              : item
-          ),
-          structuredContent: {
-            ...clonedSample.structuredContent,
-            name: normalizedName,
-          },
           _meta: widgetMeta(contentWidget),
         };
       }
 
-      const fallbackResponse: CallToolResult = {
+      return {
         content: [
           {
             type: "text",
@@ -147,11 +136,33 @@ const handler = createMcpHandler(async (server) => {
   );
 });
 
-const ensureStreamableAcceptHeader = (request: Request) => {
+const withCors = (response: Response) => {
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Accept"
+  );
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD");
+  return response;
+};
+
+const ensureStreamableAcceptHeader = async (request: Request) => {
   const acceptHeader = request.headers.get("accept") || "";
 
+  if (request.method === "OPTIONS") {
+    return withCors(new Response(null, { status: 204 }));
+  }
+
+  if (request.method === "HEAD") {
+    return withCors(new Response(null, { status: 200 }));
+  }
+
+  if (request.method === "GET") {
+    return withCors(Response.json({ status: "ok" }));
+  }
+
   if (acceptHeader.includes("text/event-stream")) {
-    return handler(request);
+    return withCors(await handler(request));
   }
 
   const values = new Set(
@@ -169,7 +180,9 @@ const ensureStreamableAcceptHeader = (request: Request) => {
 
   const updatedRequest = new Request(request, { headers: newHeaders });
 
-  return handler(updatedRequest);
+  const response = await handler(updatedRequest);
+
+  return withCors(response);
 };
 
 export const GET = ensureStreamableAcceptHeader;

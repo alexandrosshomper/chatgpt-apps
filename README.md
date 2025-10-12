@@ -111,7 +111,7 @@ Deterministic sample responses for the `show_content` tool are available in `dat
 node scripts/generate-mcp-test-data.js
 ```
 
-The script produces five example payloads that mirror the structure returned by the MCP endpoint, including both the human-readable summary text and the widget resource reference. Invoking the MCP tool with one of the sample names will replay the matching fixture so you can verify end-to-end transport of the widget metadata, structured content, and widget URI. Other inputs fall back to live data with fresh timestamps.
+The script produces five example payloads that mirror the structure returned by the MCP endpoint, making it easy to write automated tests or quickly inspect the expected metadata. Invoking the MCP tool with one of the sample names will replay the matching fixture so you can verify end-to-end transport of the widget metadata and structured content. Other inputs fall back to live data with fresh timestamps.
 
 ### Connecting from ChatGPT
 
