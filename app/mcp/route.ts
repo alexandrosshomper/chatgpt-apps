@@ -22,7 +22,7 @@ function widgetMeta(widget: ContentWidget) {
     "openai/outputTemplate": widget.templateUri,
     "openai/toolInvocation/invoking": widget.invoking,
     "openai/toolInvocation/invoked": widget.invoked,
-    "openai/widgetAccessible": false,
+    "openai/widgetAccessible": true,
     "openai/resultCanProduceWidget": true,
   } as const;
 }

@@ -37,7 +37,7 @@
           "openai/outputTemplate": "ui://widget/content-template.html",
           "openai/toolInvocation/invoking": "Loading content...",
           "openai/toolInvocation/invoked": "Content loaded",
-          "openai/widgetAccessible": false,
+          "openai/widgetAccessible": true,
           "openai/resultCanProduceWidget": true
         }
       }
@@ -69,7 +69,7 @@
           "openai/outputTemplate": "ui://widget/content-template.html",
           "openai/toolInvocation/invoking": "Loading content...",
           "openai/toolInvocation/invoked": "Content loaded",
-          "openai/widgetAccessible": false,
+          "openai/widgetAccessible": true,
           "openai/resultCanProduceWidget": true
         }
       }
@@ -101,7 +101,7 @@
           "openai/outputTemplate": "ui://widget/content-template.html",
           "openai/toolInvocation/invoking": "Loading content...",
           "openai/toolInvocation/invoked": "Content loaded",
-          "openai/widgetAccessible": false,
+          "openai/widgetAccessible": true,
           "openai/resultCanProduceWidget": true
         }
       }
@@ -133,7 +133,7 @@
           "openai/outputTemplate": "ui://widget/content-template.html",
           "openai/toolInvocation/invoking": "Loading content...",
           "openai/toolInvocation/invoked": "Content loaded",
-          "openai/widgetAccessible": false,
+          "openai/widgetAccessible": true,
           "openai/resultCanProduceWidget": true
         }
       }
@@ -165,7 +165,7 @@
           "openai/outputTemplate": "ui://widget/content-template.html",
           "openai/toolInvocation/invoking": "Loading content...",
           "openai/toolInvocation/invoked": "Content loaded",
-          "openai/widgetAccessible": false,
+          "openai/widgetAccessible": true,
           "openai/resultCanProduceWidget": true
         }
       }

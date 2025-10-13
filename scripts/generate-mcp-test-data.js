@@ -54,7 +54,7 @@ const examples = names.map((name, index) => {
         "openai/outputTemplate": contentWidget.templateUri,
         "openai/toolInvocation/invoking": contentWidget.invoking,
         "openai/toolInvocation/invoked": contentWidget.invoked,
-        "openai/widgetAccessible": false,
+        "openai/widgetAccessible": true,
         "openai/resultCanProduceWidget": true,
       },
     },
