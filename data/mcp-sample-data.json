@@ -15,12 +15,20 @@
         "name": "Avery Johnson"
       },
       "response": {
-        "content": [
-          {
-            "type": "text",
-            "text": "Avery Johnson"
+      "content": [
+        {
+          "type": "text",
+          "text": "Avery Johnson"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "ui://widget/content-template.html",
+            "text": "Show Content",
+            "mimeType": "text/html+skybridge"
           }
-        ],
+        }
+      ],
         "structuredContent": {
           "name": "Avery Johnson",
           "timestamp": "2024-01-01T12:00:00.000Z"
@@ -39,12 +47,20 @@
         "name": "Jordan Lee"
       },
       "response": {
-        "content": [
-          {
-            "type": "text",
-            "text": "Jordan Lee"
+      "content": [
+        {
+          "type": "text",
+          "text": "Jordan Lee"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "ui://widget/content-template.html",
+            "text": "Show Content",
+            "mimeType": "text/html+skybridge"
           }
-        ],
+        }
+      ],
         "structuredContent": {
           "name": "Jordan Lee",
           "timestamp": "2024-01-01T12:15:00.000Z"
@@ -63,12 +79,20 @@
         "name": "Morgan Patel"
       },
       "response": {
-        "content": [
-          {
-            "type": "text",
-            "text": "Morgan Patel"
+      "content": [
+        {
+          "type": "text",
+          "text": "Morgan Patel"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "ui://widget/content-template.html",
+            "text": "Show Content",
+            "mimeType": "text/html+skybridge"
           }
-        ],
+        }
+      ],
         "structuredContent": {
           "name": "Morgan Patel",
           "timestamp": "2024-01-01T12:30:00.000Z"
@@ -87,12 +111,20 @@
         "name": "Quinn Alvarez"
       },
       "response": {
-        "content": [
-          {
-            "type": "text",
-            "text": "Quinn Alvarez"
+      "content": [
+        {
+          "type": "text",
+          "text": "Quinn Alvarez"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "ui://widget/content-template.html",
+            "text": "Show Content",
+            "mimeType": "text/html+skybridge"
           }
-        ],
+        }
+      ],
         "structuredContent": {
           "name": "Quinn Alvarez",
           "timestamp": "2024-01-01T12:45:00.000Z"
@@ -111,12 +143,20 @@
         "name": "Taylor Nakamura"
       },
       "response": {
-        "content": [
-          {
-            "type": "text",
-            "text": "Taylor Nakamura"
+      "content": [
+        {
+          "type": "text",
+          "text": "Taylor Nakamura"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "ui://widget/content-template.html",
+            "text": "Show Content",
+            "mimeType": "text/html+skybridge"
           }
-        ],
+        }
+      ],
         "structuredContent": {
           "name": "Taylor Nakamura",
           "timestamp": "2024-01-01T13:00:00.000Z"

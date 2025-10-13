@@ -37,6 +37,14 @@ const examples = names.map((name, index) => {
           type: "text",
           text: name,
         },
+        {
+          type: "resource",
+          resource: {
+            uri: contentWidget.templateUri,
+            text: contentWidget.title,
+            mimeType: "text/html+skybridge",
+          },
+        },
       ],
       structuredContent: {
         name,
