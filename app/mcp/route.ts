@@ -50,7 +50,184 @@ const sampleResponseMap = new Map<
 
 const handler = createMcpHandler(async (server) => {
   let cachedContentWidgetHtml: string | undefined;
-  const fallbackContentWidgetHtml = `<!doctype html><html><head><title>Widget unavailable</title></head><body><main><h1>Preview unavailable</h1><p>The widget content could not be loaded. <a href="${baseURL}" target="_blank" rel="noopener noreferrer">Open the app in a new tab</a> instead.</p></main></body></html>`;
+  const fallbackContentWidgetHtml = `<!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Flyfish</title>
+      <style>
+        :root {
+          color-scheme: light dark;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+          color: rgb(24 24 27);
+          background: rgb(250 250 250);
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          body {
+            color: rgb(228 228 231);
+            background: rgb(15 15 15);
+          }
+        }
+
+        main {
+          width: min(560px, 100%);
+          border-radius: 24px;
+          border: 1px solid rgba(148, 163, 184, 0.35);
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(16px);
+          padding: 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          main {
+            background: rgba(24, 24, 27, 0.82);
+            border-color: rgba(71, 85, 105, 0.6);
+          }
+        }
+
+        h1 {
+          margin: 0;
+          font-size: 24px;
+          line-height: 1.2;
+        }
+
+        p {
+          margin: 0;
+          line-height: 1.6;
+        }
+
+        .cta {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          font-weight: 600;
+          text-decoration: none;
+          border-radius: 9999px;
+          padding: 10px 18px;
+          color: rgb(15 23 42);
+          background: linear-gradient(135deg, #38bdf8, #6366f1);
+          transition: transform 120ms ease, box-shadow 120ms ease;
+          box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+        }
+
+        .cta:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 14px 30px rgba(59, 130, 246, 0.32);
+        }
+
+        .cta:focus-visible {
+          outline: 3px solid rgba(37, 99, 235, 0.5);
+          outline-offset: 2px;
+        }
+
+        .detail {
+          font-size: 14px;
+          color: rgb(71 85 105);
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .cta {
+            color: rgb(226 232 240);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+          }
+
+          .detail {
+            color: rgb(148 163 184);
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <main>
+        <h1>Flyfish</h1>
+        <p id="welcome">Welcome to the Flyfish home experience.</p>
+        <p class="detail">
+          Signed in as <strong id="visitor">...</strong>
+        </p>
+        <p class="detail" id="timestamp" hidden></p>
+        <a
+          class="cta"
+          href="${baseURL}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open full app
+        </a>
+      </main>
+      <script>
+        const EVENT_NAME = "openai:set_globals";
+        const visitorElement = document.getElementById("visitor");
+        const timestampElement = document.getElementById("timestamp");
+
+        const readToolOutput = () => {
+          const toolOutput = window.openai?.toolOutput ?? null;
+          if (!toolOutput) {
+            return { name: "Guest", timestamp: null };
+          }
+
+          const structured = toolOutput.result?.structuredContent ?? {};
+          const name = structured.name || toolOutput.name || "Guest";
+          const timestamp = structured.timestamp || null;
+          return { name, timestamp };
+        };
+
+        const formatTimestamp = (value) => {
+          if (!value) {
+            return "";
+          }
+
+          try {
+            const formatter = new Intl.DateTimeFormat(undefined, {
+              dateStyle: "medium",
+              timeStyle: "short",
+            });
+            return formatter.format(new Date(value));
+          } catch (error) {
+            console.warn("Unable to format timestamp", error);
+            return value;
+          }
+        };
+
+        const updateVisitor = () => {
+          const { name, timestamp } = readToolOutput();
+          visitorElement.textContent = name || "Guest";
+          document.title = name ? "Flyfish • " + name : "Flyfish";
+
+          if (timestamp) {
+            timestampElement.textContent =
+              "Last updated " + formatTimestamp(timestamp);
+            timestampElement.hidden = false;
+          } else {
+            timestampElement.hidden = true;
+          }
+        };
+
+        updateVisitor();
+
+        window.addEventListener(EVENT_NAME, updateVisitor, { passive: true });
+      </script>
+    </body>
+  </html>`;
 
   const getContentWidgetHtml = async () => {
     if (cachedContentWidgetHtml) {
@@ -64,7 +241,7 @@ const handler = createMcpHandler(async (server) => {
       return cachedContentWidgetHtml;
     } catch (error) {
       console.error("Failed to fetch content widget HTML", error);
-      cachedContentWidgetHtml = undefined;
+      cachedContentWidgetHtml = fallbackContentWidgetHtml;
       return fallbackContentWidgetHtml;
     }
   };
