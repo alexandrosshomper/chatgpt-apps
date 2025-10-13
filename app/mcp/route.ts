@@ -210,14 +210,74 @@ const ensureStreamableAcceptHeader = async (request: Request) => {
   values.add("application/json");
   values.add("text/event-stream");
 
-  const newHeaders = new Headers(request.headers);
-  newHeaders.set("accept", Array.from(values).join(", "));
+  const updatedHeaders = new Headers(request.headers);
+  updatedHeaders.set("accept", Array.from(values).join(", "));
 
-  const updatedRequest = new Request(request, { headers: newHeaders });
+  const shouldHaveBody =
+    request.method !== "GET" &&
+    request.method !== "HEAD" &&
+    request.method !== "OPTIONS" &&
+    request.method !== "TRACE";
 
-  const response = await handler(updatedRequest);
+  const requestBody = shouldHaveBody ? await request.text() : undefined;
 
-  return withCors(response);
+  if (shouldHaveBody && (!requestBody || !requestBody.trim())) {
+    return withCors(
+      new Response(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          error: {
+            code: -32700,
+            message: "Parse error: request body is empty.",
+          },
+          id: null,
+        }),
+        {
+          status: 400,
+          headers: { "content-type": "application/json" },
+        }
+      )
+    );
+  }
+
+  const updatedRequestInit: RequestInit = {
+    method: request.method,
+    headers: updatedHeaders,
+    signal: request.signal,
+  };
+
+  if (shouldHaveBody && typeof requestBody === "string") {
+    updatedRequestInit.body = requestBody;
+  }
+
+  const updatedRequest = new Request(request.url, updatedRequestInit);
+
+  try {
+    const response = await handler(updatedRequest);
+
+    return withCors(response);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return withCors(
+        new Response(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            error: {
+              code: -32700,
+              message: "Parse error: invalid JSON body.",
+            },
+            id: null,
+          }),
+          {
+            status: 400,
+            headers: { "content-type": "application/json" },
+          }
+        )
+      );
+    }
+
+    throw error;
+  }
 };
 
 export const GET = ensureStreamableAcceptHeader;
