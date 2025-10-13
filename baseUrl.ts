@@ -32,10 +32,10 @@ const resolveDeploymentUrl = () => {
   }
 
   console.warn(
-    "baseURL: falling back to http://localhost:3000 because no deployment URL environment variable was found."
+    "baseURL: falling back to https://flyfish.shomper.de because no deployment URL environment variable was found."
   );
 
-  return "http://localhost:3000";
+  return "https://flyfish.shomper.de";
 };
 
 export const baseURL = resolveDeploymentUrl();
