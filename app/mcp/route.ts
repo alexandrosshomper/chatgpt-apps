@@ -171,11 +171,18 @@ const handler = createMcpHandler(async (server) => {
   );
 });
 
-const withCors = (response: Response) => {
+const withCors = (response: Response, request?: Request) => {
   response.headers.set("Access-Control-Allow-Origin", "*");
+
+  const requestedHeaders = request?.headers
+    .get("access-control-request-headers")
+    ?.trim();
+
   response.headers.set(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Accept"
+    requestedHeaders && requestedHeaders.length > 0
+      ? requestedHeaders
+      : "Content-Type, Authorization, Accept"
   );
   response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD");
   return response;
@@ -185,19 +192,19 @@ const ensureStreamableAcceptHeader = async (request: Request) => {
   const acceptHeader = request.headers.get("accept") || "";
 
   if (request.method === "OPTIONS") {
-    return withCors(new Response(null, { status: 204 }));
+    return withCors(new Response(null, { status: 204 }), request);
   }
 
   if (request.method === "HEAD") {
-    return withCors(new Response(null, { status: 200 }));
+    return withCors(new Response(null, { status: 200 }), request);
   }
 
   if (request.method === "GET") {
-    return withCors(Response.json({ status: "ok" }));
+    return withCors(Response.json({ status: "ok" }), request);
   }
 
   if (acceptHeader.includes("text/event-stream")) {
-    return withCors(await handler(request));
+    return withCors(await handler(request), request);
   }
 
   const values = new Set(
@@ -236,7 +243,8 @@ const ensureStreamableAcceptHeader = async (request: Request) => {
           status: 400,
           headers: { "content-type": "application/json" },
         }
-      )
+      ),
+      request
     );
   }
 
@@ -255,7 +263,7 @@ const ensureStreamableAcceptHeader = async (request: Request) => {
   try {
     const response = await handler(updatedRequest);
 
-    return withCors(response);
+    return withCors(response, request);
   } catch (error) {
     if (error instanceof SyntaxError) {
       return withCors(
@@ -272,7 +280,8 @@ const ensureStreamableAcceptHeader = async (request: Request) => {
             status: 400,
             headers: { "content-type": "application/json" },
           }
-        )
+        ),
+        request
       );
     }
 
