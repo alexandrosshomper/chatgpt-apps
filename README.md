@@ -159,3 +159,33 @@ The configuration automatically handles:
 - Production URLs via `VERCEL_PROJECT_PRODUCTION_URL`
 - Preview/branch URLs via `VERCEL_BRANCH_URL`
 - Asset prefixing for correct resource loading in iframes
+
+### Deploying somewhere other than Vercel
+
+Set one of the following environment variables to point to the canonical HTTPS origin of your deployment:
+
+```
+NEXT_PUBLIC_SITE_URL
+NEXT_PUBLIC_BASE_URL
+NEXT_PUBLIC_DEPLOYMENT_URL
+NEXT_PUBLIC_APP_URL
+SITE_URL
+BASE_URL
+DEPLOYMENT_URL
+APP_URL
+COOLIFY_URL
+COOLIFY_BASE_URL
+COOLIFY_APP_URL
+```
+
+`baseUrl.ts` checks the variables above (in that order) before falling back to provider-specific variables such as the `VERCEL_*` values. This makes the same code work on hosting providers like [Coolify](https://coolify.io) without any other changes—just configure one of the environment variables above to the fully qualified domain (e.g. `https://flyfish.shomper.de`).
+
+### Local development with ChatGPT
+
+When `NODE_ENV=development`, the base URL defaults to `http://localhost:3000`. If you are developing your MCP server locally but testing it from ChatGPT (which cannot reach `localhost`), set any of the variables listed above to force the same production origin during development. For example:
+
+```bash
+NEXT_PUBLIC_BASE_URL=https://flyfish.shomper.de npm run dev
+```
+
+This ensures ChatGPT loads widgets and API routes from your deployed domain while you continue to run the development server for fast refresh.
